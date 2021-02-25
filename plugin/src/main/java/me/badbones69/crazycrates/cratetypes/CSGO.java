@@ -17,64 +17,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class CSGO implements Listener {
-    
-    private static CrazyCrates cc = CrazyCrates.getInstance();
-    
-    private static void setGlass(Inventory inv) {
-        HashMap<Integer, ItemStack> glass = new HashMap<>();
-        for (int i = 0; i < 10; i++) {
-            if (i < 9 && i != 3) {
-                glass.put(i, inv.getItem(i));
-            }
-        }
-        for (int i : glass.keySet()) {
-            if (inv.getItem(i) == null) {
-                ItemStack item = Methods.getRandomPaneColor().setName(" ").build();
-                inv.setItem(i, item);
-                inv.setItem(i + 18, item);
-            }
-        }
-        for (int i = 1; i < 10; i++) {
-            if (i < 9 && i != 4) {
-                glass.put(i, inv.getItem(i));
-            }
-        }
-        ItemStack item = Methods.getRandomPaneColor().setName(" ").build();
-        inv.setItem(0, glass.get(1));
-        inv.setItem(18, glass.get(1));
-        inv.setItem(1, glass.get(2));
-        inv.setItem(1 + 18, glass.get(2));
-        inv.setItem(2, glass.get(3));
-        inv.setItem(2 + 18, glass.get(3));
-        inv.setItem(3, glass.get(5));
-        inv.setItem(3 + 18, glass.get(5));
-        inv.setItem(4, new ItemBuilder().setMaterial("BLACK_STAINED_GLASS_PANE", "STAINED_GLASS_PANE:15").setName(" ").build());
-        inv.setItem(4 + 18, new ItemBuilder().setMaterial("BLACK_STAINED_GLASS_PANE", "STAINED_GLASS_PANE:15").setName(" ").build());
-        inv.setItem(5, glass.get(6));
-        inv.setItem(5 + 18, glass.get(6));
-        inv.setItem(6, glass.get(7));
-        inv.setItem(6 + 18, glass.get(7));
-        inv.setItem(7, glass.get(8));
-        inv.setItem(7 + 18, glass.get(8));
-        inv.setItem(8, item);
-        inv.setItem(8 + 18, item);
-    }
-    
-    public static void openCSGO(Player player, Crate crate, KeyType keyType, boolean checkHand) {
-        Inventory inv = Bukkit.createInventory(null, 27, Methods.sanitizeColor(crate.getFile().getString("Crate.CrateName")));
-        setGlass(inv);
-        for (int i = 9; i > 8 && i < 18; i++) {
-            inv.setItem(i, crate.pickPrize(player).getDisplayItem());
-        }
-        player.openInventory(inv);
-        if (cc.takeKeys(1, player, crate, keyType, checkHand)) {
-            startCSGO(player, inv, crate);
-        } else {
-            Methods.failedToTakeKey(player, crate);
-            cc.removePlayerFromOpeningList(player);
-        }
-    }
     
     private static void startCSGO(final Player player, final Inventory inv, Crate crate) {
         cc.addCrateTask(player, new BukkitRunnable() {
